@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+{% include 'pages/components/shop/_banner.html' %}
+
+<div class="shopify-grid">
+    <div class="container py-5 my-5">
+        <div class="row flex-md-row-reverse g-md-5 mb-5">
+            {% include 'pages/components/shop/_product_list.html' %}
+            {% include 'pages/components/shop/_aside.html' %}
+        </div>
+    </div>
+</div>
+
+{% include 'pages/components/_register.html' %}
+{% include 'pages/components/_service.html' %}
+{% endblock content %}

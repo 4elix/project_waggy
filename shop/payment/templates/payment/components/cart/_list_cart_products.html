@@ -1,0 +1,171 @@
+{% load payment_tag %}
+
+{% if products %}
+<div class="col-md-8 pe-md-5">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col" class="card-title text-uppercase">Product</th>
+            <th scope="col" class="card-title text-uppercase">Quantity</th>
+            <th scope="col" class="card-title text-uppercase">Color</th>
+            <th scope="col" class="card-title text-uppercase">Size</th>
+            <th scope="col" class="card-title text-uppercase">Subtotal</th>
+            <th scope="col" class="card-title text-uppercase"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in products %}
+        <tr>
+            <td scope="row" class="py-4">
+                <div class="cart-info d-flex flex-wrap align-items-center ">
+                    <div class="col-lg-3">
+                        <div class="card-image">
+                            <img src="{{ item.product.get_first_photo }}" alt="cloth" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card-detail ps-3">
+                            <h5 class="card-title">
+                                <a href="#" class="text-decoration-none">{{ item.product.title }}</a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="py-4 align-middle">
+                <div class="input-group product-qty align-items-center w-100" style="flex-wrap: nowrap">
+
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-light btn-number" data-type="minus">
+                          {% if item.color is None and item.size is None %}
+                          <a href="{% url 'minus_v1' item.product.pk 'remove' %}">
+                            <svg width="16" height="16">
+                              <use xlink:href="#minus"></use>
+                            </svg>
+                          </a>
+                          {% else %}
+                          <a href="{% url 'minus_v2' item.product.pk 'remove' item.color item.size 1 %}">
+                            <svg width="16" height="16">
+                              <use xlink:href="#minus"></use>
+                            </svg>
+                          </a>
+                          {% endif %}
+                      </button>
+                    </span>
+
+                    <span class="form-control p-2 mx-1">
+                        {{ item.quantity }}
+                    </span>
+
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-light btn-number" data-type="plus"
+                              data-field="">
+                          {% if item.color is None and item.size is None %}
+                          <a href="{% url 'plus_v1' item.product.pk 'add' %}">
+                            <svg width="16" height="16">
+                              <use xlink:href="#plus"></use>
+                            </svg>
+                          </a>
+                          {% else %}
+                          <a href="{% url 'plus_v2' item.product.pk 'add' item.color item.size 1 %}">
+                            <svg width="16" height="16">
+                              <use xlink:href="#plus"></use>
+                            </svg>
+                          </a>
+                          {% endif %}
+                      </button>
+                    </span>
+                </div>
+            </td>
+            <td class="py-4 align-middle">
+                <div class="total-price">
+                    {% if item.color is not None %}
+                    <span class="secondary-font fw-medium">{{ item.color }}</span>
+                    {% else %}
+                    <span class="secondary-font fw-medium">Нету</span>
+                    {% endif %}
+                </div>
+            </td>
+            <td class="py-4 align-middle">
+                <div class="total-price">
+                    {% if item.size is not None %}
+                    <span class="secondary-font fw-medium">{{ item.size }}</span>
+                    {% else %}
+                    <span class="secondary-font fw-medium">Нету</span>
+                    {% endif %}
+                </div>
+            </td>
+            <td class="py-4 align-middle">
+                <div class="total-price">
+                    <span class="secondary-font fw-medium">${{ item.get_total_price }}</span>
+                </div>
+            </td>
+            <td class="py-4 align-middle">
+                <div class="cart-remove">
+                    {% convert_in_str item.color as color %}
+                    {% convert_in_str item.size as size %}
+                    {% convert_in_str item.added_at as added_at %}
+                    <a href="{% url 'delete_product_cart' order.pk item.product.id item.quantity color size added_at %}">
+                        <svg width="24" height="24">
+                            <use xlink:href="#trash"></use>
+                        </svg>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-md-4">
+    <div class="cart-totals">
+        <h2 class="pb-4">Cart Total</h2>
+        <div class="total-price pb-4">
+            <table cellspacing="0" class="table text-uppercase">
+                <tbody>
+                <tr class="subtotal pt-2 pb-2 border-top border-bottom">
+                    <th>Quantity</th>
+                    <td data-title="Subtotal">
+                      <span class="price-amount amount text-dark ps-5">
+                        <bdi>
+                          <span class="price-currency-symbol">$</span>{{ order.get_cart_total_quantity }}
+                        </bdi>
+                      </span>
+                    </td>
+                </tr>
+                <tr class="order-total pt-2 pb-2 border-bottom">
+                    <th>Total price</th>
+                    <td data-title="Total">
+                      <span class="price-amount amount text-dark ps-5">
+                        <bdi>
+                          <span class="price-currency-symbol">$</span>{{ order.get_cart_total_price }}</bdi>
+                      </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="button-wrap row g-2">
+            <div class="col-md-6">
+                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">Update Cart</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-dark btn-lg rounded-1 fs-6 p-3 w-100">Continue To
+                    Shop
+                </button>
+            </div>
+            <div class="col-md-12">
+                <a href="{% url 'checkout_path' %}" class="btn btn-primary p-3 text-uppercase rounded-1 w-100">
+                    Proceed to checkout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="col-md-12">
+    <h2 class="section-title text-center mb-5">
+        Пустая корзина
+    </h2>
+</div>
+{% endif %}

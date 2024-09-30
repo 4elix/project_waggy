@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+<section id="banner" class="py-3" style="background: #F9F3EC;">
+    <div class="container">
+        <div class="hero-content py-5 my-3">
+            <h2 class="display-1 mt-3 mb-0">Checkout</h2>
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item nav-link" href="#">Home</a>
+                <a class="breadcrumb-item nav-link" href="#">Pages</a>
+                <span class="breadcrumb-item active" aria-current="page">Checkout</span>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="shopify-cart checkout-wrap">
+    <div class="container py-5 my-5">
+        <form action="{% url 'pay_activate' %}" method="post" class="form-group">
+            {% csrf_token %}
+            <div class="row d-flex flex-wrap">
+                <div class="col-lg-6">
+                    <h2 class="text-dark pb-3">Billing Details</h2>
+                    <div class="billing-details">
+                        {% for filed in customer_form %}
+                        <label for="">{{ filed.label }}</label>
+                        {{ filed }}
+                        {% endfor %}
+
+                        {% for field in shipping_form %}
+                        <label for="">{{ field.label }}</label>
+                        {{ field }}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+
+                    <div class="your-order mt-5">
+                        <h2 class="display-7 text-dark pb-3">Cart Totals</h2>
+                        <div class="total-price">
+                            <table cellspacing="0" class="table">
+                                <tbody>
+                                <tr class="subtotal border-top border-bottom pt-2 pb-2 text-uppercase">
+                                    <th>Quantity </th>
+                                    <td data-title="Subtotal">
+                                    <span class="price-amount amount ps-5">
+                                      <bdi>
+                                        <span class="price-currency-symbol"></span>{{ order.get_cart_total_quantity }} </bdi>
+                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr class="order-total border-bottom pt-2 pb-2 text-uppercase">
+                                                <th>Total price</th>
+                                                <td data-title="Total">
+                                    <span class="price-amount amount ps-5">
+                                      <bdi>
+                                        <span class="price-currency-symbol">$</span>{{ order.get_cart_total_price }}</bdi>
+                                    </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button type="submit" name="submit" class="btn btn-dark btn-lg rounded-1 w-100">
+                                Place an  order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock content %}

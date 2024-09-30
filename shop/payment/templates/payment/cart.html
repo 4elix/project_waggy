@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block content %}
+{% include 'payment/components/cart/_banner.html' %}
+
+<section id="cart" class="my-5 py-5">
+    <div class="container">
+        <div class="row g-md-5">
+            {% include 'payment/components/cart/_list_cart_products.html' %}
+        </div>
+    </div>
+</section>
+
+{% include 'pages/components/_register.html' %}
+{% include 'pages/components/_service.html' %}
+
+{% endblock content %}
